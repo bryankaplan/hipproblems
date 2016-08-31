@@ -18,7 +18,39 @@ def group_digits(amount, grouping, separator):
     Returns: A string, consisting of the input amount grouped and with
         separators inserted.
     """
-    raise NotImplementedError("Please supply an implementation")
+    amount = str(amount)
+
+    if grouping[0] == -1: # noop
+        return amount
+
+    # Although README.md states that input is a list of integers, in
+    # fact there are some floats in the test inputs. The expected test
+    # results indicate that we want to work only with the floor of the
+    # float, while appending the fraction value to the final result.
+    if '.' in amount:
+        integer, radix_point, fraction = amount.rpartition('.')
+        integer = group_digits(integer, grouping, separator)
+        return integer + radix_point + fraction
+
+    # Take the trailing chunk of digits (where the length of the chunk
+    # is specified in grouping). Then recurse to determine its prefix.
+
+    if grouping[1] == 0:
+        if len(amount) < grouping[0]: # Nothing to do
+            return amount
+        else:
+            prefix_grouping = grouping
+    else:
+        prefix_grouping = grouping[1:]
+
+    if prefix_grouping:
+        prefix = group_digits(amount[0:0-grouping[0]],
+                              prefix_grouping,
+                              separator)
+
+    chunk = amount[0-grouping[0]:]
+
+    return prefix + separator + chunk if prefix else chunk
 
 
 def run_tests(test_cases):
