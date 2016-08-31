@@ -20,7 +20,7 @@ def group_digits(amount, grouping, separator):
     """
     amount = str(amount)
 
-    if grouping[0] == -1: # noop
+    if not grouping or grouping[0] == -1: # noop
         return amount
 
     # Although README.md states that input is a list of integers, in
@@ -35,7 +35,9 @@ def group_digits(amount, grouping, separator):
     # Take the trailing chunk of digits (where the length of the chunk
     # is specified in grouping). Then recurse to determine its prefix.
 
-    if grouping[1] == 0:
+    prefix = None
+
+    if len(grouping) > 1 and grouping[1] == 0:
         if len(amount) < grouping[0]: # Nothing to do
             return amount
         else:
@@ -90,6 +92,8 @@ BASIC_TESTS = [
     (56781234, [1, 0], "", "56781234"),
     (56781234, [-1], ".", "56781234"),
     (19216801, [1, 1, 3, 0], ".", "192.168.0.1"),
+    (8316602, [0], "#", "8316602"),
+    (8316602, [], "#", "8316602"),
 ]
 
 
